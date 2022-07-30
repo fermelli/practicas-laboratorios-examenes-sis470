@@ -179,18 +179,49 @@ public class CoffeeMakerTest {
 	 * Then we get the correct change back.
 	 */
 	@Test
-	public void testMakeCoffeeRecipeToPurchaseNull() {
+	public void testMakeCoffeeRecipeToPurchase1() {
 		int recipeIndex = 2;
 		int paid = 100;
 		Mockito.when(recipeBookStub.getRecipes()).thenReturn(stubRecipies);
-		CoffeeMaker coffeeMaker = new CoffeeMaker(recipeBookStub, inventory);
+		int expectedChange = coffeeMaker.makeCoffee(recipeIndex, paid);
+		assertEquals(expectedChange, paid);
+	}
+	
+	@Test
+	public void testMakeCoffeeRecipeToPurchase2() {
+		int recipeIndex = 0;
+		int paid = 100;
+		Mockito.when(inventory.useIngredients(recipe1)).thenReturn(true);
+		Mockito.when(recipeBookStub.getRecipes()).thenReturn(stubRecipies);
+		int expectedChange = coffeeMaker.makeCoffee(recipeIndex, paid);
+		assertEquals(expectedChange, paid - recipe1.getPrice());
+	}
+	
+	@Test
+	public void testMakeCoffeeRecipeToPurchase3() {
+		int recipeIndex = 2;
+		int paid = 100;
+		Recipe [] recipes = new Recipe [] {null, null, null};
+		Mockito.when(recipeBookStub.getRecipes()).thenReturn(recipes);
+		int expectedChange = coffeeMaker.makeCoffee(recipeIndex, paid);
+		assertEquals(expectedChange, paid);
+	}
+	
+	@Test
+	public void testMakeCoffeeRecipeToPurchase4() {
+		int recipeIndex = 0;
+		int paid = 40;
+		Mockito.when(recipeBookStub.getRecipes()).thenReturn(stubRecipies);
 		int expectedChange = coffeeMaker.makeCoffee(recipeIndex, paid);
 		assertEquals(expectedChange, paid);
 	}
 
 	@Test
 	public void testGetRecipes() {
-		throw new RuntimeException("not yet implemented");
+		Mockito.when(recipeBookStub.getRecipes()).thenReturn(stubRecipies);
+		Recipe [] expectedRecipes = coffeeMaker.getRecipes();
+		assertEquals(expectedRecipes.length, stubRecipies.length);
+		Mockito.verify(recipeBookStub).getRecipes();
 	}
 		
 }
